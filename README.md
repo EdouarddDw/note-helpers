@@ -1,92 +1,67 @@
-# Obsidian Sample Plugin
+# Note Helpers
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+A small [Obsidian](https://obsidian.md) plugin with a couple of shortcuts that make note-taking faster: quick callout insertion and automatic arrow conversion.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
+### Callout suggester
 
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and outputs a Notice on click.
-- Registers a global interval which logs 'setInterval' to the console.
+Type `/callout` at the start of a line and pick a callout type from the popup. Keep typing to filter the list (e.g. `/callout war` → `warning`).
 
-## First time developing plugins?
+Selecting a type inserts:
 
-Quick starting guide for new plugin devs:
-
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `src/main.ts` to `main.js`.
-- Make changes to `src/main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
-
-## Releasing new releases
-
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
-
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
-
-## Adding your plugin to the community plugin list
-
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
-
-## How to use
-
-- Clone this repo.
-- Make sure your NodeJS is at least v18 (`node --version`).
-- `npm i` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
-
-## Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-## Improve code quality with eslint
-
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code.
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
-
-## Funding URL
-
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-	"fundingUrl": "https://buymeacoffee.com"
-}
+```markdown
+> [!warning] 
 ```
 
-If you have multiple URLs, you can also do:
+The cursor lands where the optional title goes.
 
-```json
-{
-	"fundingUrl": {
-		"Buy Me a Coffee": "https://buymeacoffee.com",
-		"GitHub Sponsor": "https://github.com/sponsors",
-		"Patreon": "https://www.patreon.com/"
-	}
-}
+Supported types: `note`, `abstract`, `info`, `todo`, `tip`, `success`, `question`, `warning`, `failure`, `danger`, `bug`, `example`, `quote`.
+
+### Arrow conversion
+
+Text arrows are turned into Unicode arrows as you type:
+
+| You type | You get |
+| -------- | ------- |
+| `->`     | →       |
+| `<-`     | ←       |
+| `<->`    | ↔       |
+
+- Arrows inside inline code, code blocks and math are left alone.
+- Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd> right after a conversion to undo just the conversion and keep the plain text.
+- Live conversion can be turned off in **Settings → Note helper**.
+
+To convert arrows in existing text, run the command **Note helper: Convert arrows in selection (or whole note)** from the command palette. It converts the selection, or the whole note if nothing is selected. You can bind it to a hotkey in **Settings → Hotkeys**.
+
+## Installation
+
+The plugin is not in the community plugin list. Install it manually:
+
+1. Download `main.js`, `manifest.json` and `styles.css` from the [latest release](https://github.com/EdouarddDw/note-helpers/releases), or build them yourself (see below).
+2. Copy them into `<your vault>/.obsidian/plugins/note-helpers/`.
+3. Reload Obsidian and enable **Note helper** in **Settings → Community plugins**.
+
+## Development
+
+Requires Node.js 18 or newer.
+
+```bash
+git clone https://github.com/EdouarddDw/note-helpers.git
+cd note-helpers
+npm install
+npm run dev     # watch mode, rebuilds main.js on save
 ```
 
-## API Documentation
+Other scripts:
 
-See https://docs.obsidian.md
+| Command         | Description                          |
+| --------------- | ------------------------------------ |
+| `npm run build` | Type-check and build for production  |
+| `npm run lint`  | Run ESLint                           |
+
+Source code lives in `src/main.ts`. For a fast loop, clone the repo directly into a vault's `.obsidian/plugins/` folder and reload Obsidian after each build.
+
+## License
+
+[0BSD](LICENSE). Based on the [Obsidian sample plugin](https://github.com/obsidianmd/obsidian-sample-plugin).
