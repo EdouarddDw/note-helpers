@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "note-helpers",
+	"name": "Note helper",
 	"version": "1.0.0",
 	"minAppVersion": "1.0.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "a couple of helper shortcuts for when I take nots",
+	"author": "Edouard Dewaerheijd",
+	"authorUrl": "https://github.com/EdouarddDw",
 	"isDesktopOnly": false
 }
