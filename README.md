@@ -34,6 +34,16 @@ Text arrows are turned into Unicode arrows as you type:
 
 To convert arrows in existing text, run the command **Note helper: Convert arrows in selection (or whole note)** from the command palette. It converts the selection, or the whole note if nothing is selected. You can bind it to a hotkey in **Settings → Hotkeys**.
 
+### Figures folder
+
+Pasted screenshots and other images land in the vault root. As soon as a note links one (`![[…]]`, `[[…]]`, `![](…)` or `[](…)`), the image is moved to your figures folder and the links are updated automatically.
+
+- Only images in the vault root are moved (`png`, `jpg`, `jpeg`, `gif`, `webp`, `svg`). Images in other folders are left alone.
+- If a file with the same name already exists in the figures folder, the moved image gets a number suffix (`image 1.png`).
+- Turn the feature on or off and choose the folder in **Settings → Note helper**. The folder is created if it doesn't exist.
+
+To tidy up images already in the root, run **Note helper: Move linked images from vault root to figures folder**.
+
 ## Installation
 
 The plugin is not in the community plugin list. Install it manually:
@@ -60,7 +70,7 @@ Other scripts:
 | `npm run build` | Type-check and build for production  |
 | `npm run lint`  | Run ESLint                           |
 
-Source code lives in `src/main.ts`. For a fast loop, clone the repo directly into a vault's `.obsidian/plugins/` folder and reload Obsidian after each build.
+Source code lives in `src/` (`main.ts` for the plugin lifecycle, `figures.ts` for the figures folder feature). For a fast loop, clone the repo directly into a vault's `.obsidian/plugins/` folder and reload Obsidian after each build.
 
 ## License
 

@@ -15,12 +15,19 @@ import { EditorState } from "@codemirror/state";
 import { syntaxTree } from "@codemirror/language";
 import { isolateHistory } from "@codemirror/commands";
 import type { SyntaxNode } from "@lezer/common";
+import { DEFAULT_FIGURES_FOLDER, FolderSuggest, registerFigureMover } from "./figures";
 
 interface NoteHelperSettings {
 	autoArrows: boolean;
+	autoMoveFigures: boolean;
+	figuresFolder: string;
 }
 
-const DEFAULT_SETTINGS: NoteHelperSettings = { autoArrows: true };
+const DEFAULT_SETTINGS: NoteHelperSettings = {
+	autoArrows: true,
+	autoMoveFigures: true,
+	figuresFolder: DEFAULT_FIGURES_FOLDER,
+};
 
 const CALLOUT_TYPES = [
 	"note", "abstract", "info", "todo", "tip", "success", "question",
@@ -53,6 +60,9 @@ export default class NoteHelpersPlugin extends Plugin {
 				}
 			},
 		});
+
+		// 3. Images in the vault root move to the figures folder once a note links them
+		registerFigureMover(this);
 
 		this.addSettingTab(new NoteHelpersSettingTab(this.app, this));
 	}
@@ -93,7 +103,7 @@ export default class NoteHelpersPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, (await this.loadData()) as Partial<NoteHelperSettings>);
 	}
 
 	async saveSettings() {
@@ -108,9 +118,9 @@ class CalloutSuggest extends EditorSuggest<string> {
 		const match = textBefore.match(/^(\s*)\/callout\s?(\w*)$/i);
 		if (!match) return null;
 		return {
-			start: { line: cursor.line, ch: match[1].length },
+			start: { line: cursor.line, ch: (match[1] ?? "").length },
 			end: cursor,
-			query: match[2].toLowerCase(),
+			query: (match[2] ?? "").toLowerCase(),
 		};
 	}
 
@@ -172,5 +182,26 @@ class NoteHelpersSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				})
 			);
+		new Setting(this.containerEl)
+			.setName("Move linked images to figures folder")
+			.setDesc("When a note links an image that sits in the vault root, move it to the figures folder.")
+			.addToggle((t) =>
+				t.setValue(this.plugin.settings.autoMoveFigures).onChange(async (v) => {
+					this.plugin.settings.autoMoveFigures = v;
+					await this.plugin.saveSettings();
+				})
+			);
+		new Setting(this.containerEl)
+			.setName("Figures folder")
+			.setDesc("Where linked images are moved. Created if it doesn't exist.")
+			.addText((t) => {
+				new FolderSuggest(this.app, t.inputEl);
+				t.setPlaceholder(DEFAULT_FIGURES_FOLDER)
+					.setValue(this.plugin.settings.figuresFolder)
+					.onChange(async (v) => {
+						this.plugin.settings.figuresFolder = v.trim();
+						await this.plugin.saveSettings();
+					});
+			});
 	}
 }

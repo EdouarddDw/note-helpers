@@ -11,10 +11,12 @@
 		"lint": "eslint ."
 	},
 	"keywords": [],
-	"overrides": { "@codemirror/state": "$@codemirror/state" },
+	"overrides": {
+		"@codemirror/state": "$@codemirror/state"
+	},
 	"license": "0-BSD",
 	"devDependencies": {
-		"@codemirror/commands": "^6.11.1",
+		"@codemirror/commands": "~6.10.2",
 		"@codemirror/language": "^6.12.4",
 		"@codemirror/state": "6.5.0",
 		"@codemirror/view": "^6.38.6",
